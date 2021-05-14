@@ -32,22 +32,28 @@ import axios from "axios";
 const User = () => {
 
   const [user, setUser] = useState([]);
-  const [text, setText] = useState("");
-  const [option, setOption] = useState();
-  const [desc, setDesc] = useState("");
+  const [text, setText] = useState("name");
+  const [option, setOption] = useState([]);
+  const [desc, setDesc] = useState(false);
 
   useEffect(() => {
 
     axios
       .get("https://randomuser.me/api/")
-      .then((res) => setUser(res?.data?.results[0]));
-  }, [user]);
+      .then((res) => {
+          setUser(res.data.results[0])
+                   
+        //   setOption(user?.name?.title + " " + user?.name?.first + " " + user?.name?.last)
+    });
+  }, [desc]);
 
-  const newUser = () => {
-    axios
-      .get("https://randomuser.me/api/")
-      .then((res) => setUser(res?.data?.results[0]));
-  }, [];
+
+
+//   const newUser = () => {
+//     axios
+//       .get("https://randomuser.me/api/")
+//       .then((res) => setUser(res?.data?.results[0]));
+//   }, [];
 
 
   
@@ -66,7 +72,13 @@ const User = () => {
             {/* <img src={user.picture.large} className="user-img" alt="logo" /> */}
             <div>
                 <p>My {text} is</p>
-                <p>{option} </p>
+                <p>{text == "name" && user?.name?.title} {text == "name" && user?.name?.first} {text 
+                    == "name" && user?.name?.last}</p>
+                <p>{text == "e-mail" && user?.email}</p>
+                <p>{text == "age" && user?.dob?.age}</p>
+                <p>{text == "country" && user?.location?.country}  </p>
+                <p>{text == "phone" && user?.phone} </p>
+                <p>{text == "password" && user?.login?.password }</p>
 
             </div>
             <div>
@@ -78,7 +90,7 @@ const User = () => {
                 <img onClick={() => {setText("password"); setOption(user.login.password);} }src={password} className="options" alt="logo" />
             </div>
             <div>
-                <button onClick={() => newUser()} >NEW USER</button>
+            <button onClick = {() => setDesc(!desc)} >NEW USER</button>
                 <button>ADD USER</button>
             </div>
 
