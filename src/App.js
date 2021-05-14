@@ -1,4 +1,3 @@
-import { useEffect, useState} from "react";
 import User from "./components/user/User"
 
 import cwlogo from "./assets/cw.svg"

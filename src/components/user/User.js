@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import man from "../../assets/man.svg"
 import growman from "../../assets/growing-up-man.svg"
@@ -10,6 +10,7 @@ import password from "../../assets/padlock.svg"
 import phone from "../../assets/phone.svg"
 
 import './User.css';
+
 
 
 import axios from "axios";
@@ -32,6 +33,7 @@ import axios from "axios";
 const User = () => {
 
   const [user, setUser] = useState([]);
+  const [userList, setUserList] = useState([]);
   const [text, setText] = useState("name");
   const [option, setOption] = useState([]);
   const [desc, setDesc] = useState(false);
@@ -47,6 +49,17 @@ const User = () => {
     });
   }, [desc]);
 
+  const addUser = useCallback(() => {
+      setUserList([ ...userList, {
+          name: (user?.name?.title + " " + user?.name?.first + " " + user?.name?.last),
+          email: user?.email,
+          phone: user?.phone,
+          age: user?.dob?.age
+        }
+    ])}, [user])
+    
+    // console.log(userList)
+    // console.log(userList[0].name)
 
 
 //   const newUser = () => {
@@ -69,34 +82,61 @@ const User = () => {
 
     return (
         <div>
-            {/* <img src={user.picture.large} className="user-img" alt="logo" /> */}
+            <img src={user?.picture?.large} className="user-img" alt="logo" />
             <div>
                 <p>My {text} is</p>
-                <p>{text == "name" && user?.name?.title} {text == "name" && user?.name?.first} {text 
-                    == "name" && user?.name?.last}</p>
-                <p>{text == "e-mail" && user?.email}</p>
-                <p>{text == "age" && user?.dob?.age}</p>
-                <p>{text == "country" && user?.location?.country}  </p>
-                <p>{text == "phone" && user?.phone} </p>
-                <p>{text == "password" && user?.login?.password }</p>
+                <p>{text === "name" && user?.name?.title} {text === "name" && user?.name?.first} {text 
+                    === "name" && user?.name?.last}</p>
+                <p>{text === "e-mail" && user?.email}</p>
+                <p>{text === "age" && user?.dob?.age}</p>
+                <p>{text === "country" && user?.location?.country}  </p>
+                <p>{text === "phone" && user?.phone} </p>
+                <p>{text === "password" && user?.login?.password }</p>
 
             </div>
             <div>
-                <img onClick={() => {setText("name"); setOption(user?.name?.title + " " + user?.name?.first + " " + user?.name?.last); } } src={man} className="options" alt="logo" />
+                <img onClick={() => {setText("name"); setOption(user?.name?.title + " " + user?.name?.first + " " + user?.name?.last); } }  src={user.gender === "male" ? man : woman }
+                 className="options" alt="logo" />
                 <img onClick={() => {setText("e-mail"); setOption(user.email);}} src={mail} className="options" alt="logo" />
-                <img onClick={() => {setText("age"); setOption(user.dob.age); }} src={growman} className="options" alt="logo" />
+                <img onClick={() => {setText("age"); setOption(user.dob.age); }} src={user.gender === "male" ? growman : growwoman } className="options" alt="logo" />
                 <img onClick={() => {setText("country"); setOption(user.location.country);} }src={map} className="options" alt="logo" />
                 <img onClick={() => {setText("phone"); setOption(user.phone);} }src={phone} className="options" alt="logo" />
                 <img onClick={() => {setText("password"); setOption(user.login.password);} }src={password} className="options" alt="logo" />
             </div>
             <div>
-            <button onClick = {() => setDesc(!desc)} >NEW USER</button>
-                <button>ADD USER</button>
+                <button onClick = {() => setDesc(!desc)} >NEW USER</button>
+                <button onClick = {() => addUser()}>ADD USER</button>
+                
+                {userList.length > 0 ?
+                
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Age</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {userList?.map((users, index) => { 
+                        return (
+                        <tr key={index}>
+                            <td>{users.name}</td>
+                            <td>{users.email}</td>
+                            <td>{users.phone}</td>
+                            <td>{users.age}</td>
+                        </tr>)  
+                        }
+                        )
+                    }
+                    </tbody>               
+            
+                </table> : null}
             </div>
 
-            
         </div>
     )
 }
 
-export default User
+export default User;
